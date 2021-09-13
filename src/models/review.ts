@@ -1,13 +1,13 @@
 import { Schema, model, connect } from "mongoose";
 
 interface IReview {
-    rating: string;
+    rating: number;
     comment: string;
   }
   
 const schema = new Schema<IReview>({
     rating: {
-        type: String,
+        type: Number,
         required: true
     },
     comment: {

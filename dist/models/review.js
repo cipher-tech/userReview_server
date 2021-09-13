@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var schema = new mongoose_1.Schema({
     rating: {
-        type: String,
+        type: Number,
         required: true
     },
     comment: {
