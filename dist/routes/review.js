@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var mongoose_1 = __importDefault(require("mongoose"));
+var app_1 = require("../app");
 var Review = mongoose_1.default.model('Review');
 var router = express_1.default.Router();
 router.get('/get_reviews', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -73,6 +74,8 @@ router.post('/add_review', function (req, res) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, review.save()];
             case 2:
                 _b.sent();
+                //adding realtime update with socket IO 
+                app_1.io.emit("New_review", { status: "successful", review: review });
                 res.send({ status: "successful", review: review });
                 return [3 /*break*/, 4];
             case 3:

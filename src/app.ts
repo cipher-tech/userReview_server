@@ -1,33 +1,53 @@
+import {config} from 'dotenv';
 import './models/review';
-import express from 'express';
+import express from "express";
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import trackRoutes from './routes/review';
 import cors from 'cors'
+import Server from "socket.io";
+import { createServer, Server as serve } from "http";
+import ioClient from 'socket.io-client';
 
-const app = express();   
+config()
+const app = express();
 
 app.use(cors())
 app.use(bodyParser.json());
 app.use(trackRoutes);
 
-const mongoUri = 'mongodb+srv://admin:4DUJ6qEaQvmBbj4@cluster0.wwxiu.mongodb.net/reviews?retryWrites=true&w=majority';
+
+const mongoUri = process.env.DATABASE_URL;
 if (!mongoUri) {
   throw new Error(
-    `MongoURI was not supplied.`  );
+    `MongoURI was not supplied.`);
 }
 mongoose.connect(mongoUri);
 mongoose.connection.on('connected', () => {
-  console.log('Connected to mongo instance'); 
+  console.log('Connected to mongo instance');
 });
 mongoose.connection.on('error', err => {
   console.error('Error connecting to mongo', err);
 });
 
-app.get('/', (req, res) => {
-  res.send(`hello world`);
+const httpServer = createServer(app)
+
+export const io = (Server as any)(httpServer, {
+  cors: {
+    origin: "*",
+  }
 });
- 
-app.listen(3000, () => {
-  console.log('Listening on port 3000');  
-});  
+
+io.on("connect", (socket: any) => {
+  socket.on("review_added", async () => {
+    const Review = mongoose.model('Review');
+    
+    const reviews = await Review.find();
+
+    io.emit("New_review", { status: "successful", reviews } );
+  })
+});
+
+httpServer.listen(3000, () => {
+  console.log('Listening on port 3000');
+});

@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { Socket } from 'socket.io';
+import { io } from '../app';
 
 const Review = mongoose.model('Review');
 
@@ -18,11 +20,13 @@ router.post('/add_review', async (req: Request, res: Response) => {
             .status(422)
             .send({ error: 'You must provide a comment and rating' });
     }
-
     try {
         const review = new Review({ comment, rating, });
         await review.save();
-        res.send({status: "successful", review});
+        //adding realtime update with socket IO 
+            io.emit("New_review", { status: "successful", review } );
+
+        res.send({ status: "successful", review });
     } catch (error) {
         res.status(422).send({ error: error });
     }
