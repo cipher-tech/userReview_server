@@ -54,11 +54,10 @@ var app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use(review_1.default);
-var mongoUri = process.env.DATABASE_URL;
-if (!mongoUri) {
+if (!process.env.DATABASE_URL) {
     throw new Error("MongoURI was not supplied.");
 }
-mongoose_1.default.connect(mongoUri);
+mongoose_1.default.connect(process.env.DATABASE_URL);
 mongoose_1.default.connection.on('connected', function () {
     console.log('Connected to mongo instance');
 });
@@ -87,6 +86,6 @@ exports.io.on("connect", function (socket) {
         });
     }); });
 });
-httpServer.listen(3000, function () {
+httpServer.listen(process.env.PORT, function () {
     console.log('Listening on port 3000');
 });

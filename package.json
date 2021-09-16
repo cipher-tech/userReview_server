@@ -1,11 +1,12 @@
 {
   "name": "user_review_server",
   "version": "1.0.0",
-  "description": "",
+  "description": "A test project for managing user reviews with realtime update using sockets.",
   "main": "index.js",
   "scripts": {
     "start_ts_server": "tsc -w",
     "start_node_server": "nodemon dist/app",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

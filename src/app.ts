@@ -16,13 +16,11 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(trackRoutes);
 
-
-const mongoUri = process.env.DATABASE_URL;
-if (!mongoUri) {
+if (!process.env.DATABASE_URL) {
   throw new Error(
     `MongoURI was not supplied.`);
 }
-mongoose.connect(mongoUri);
+mongoose.connect(process.env.DATABASE_URL);
 mongoose.connection.on('connected', () => {
   console.log('Connected to mongo instance');
 });
@@ -48,6 +46,6 @@ io.on("connect", (socket: any) => {
   })
 });
 
-httpServer.listen(3000, () => {
+httpServer.listen(process.env.PORT, () => {
   console.log('Listening on port 3000');
 });
